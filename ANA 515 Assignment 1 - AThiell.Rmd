@@ -1,0 +1,53 @@
+---
+title: "ANA 515 Assignment 1"
+author: Amanda Thiell
+date: March 26th 2022
+output:
+  html_document:
+    theme:
+      bootswatch: cerulean 
+
+---
+```{r setup, include=FALSE}
+options(repos = list(CRAN="http://cran.rstudio.com/"))
+install.packages("tidyverse")
+install.packages("knitr")
+install.packages("bslib")
+
+```
+
+```{r packages, include=FALSE}
+library(tidyverse)
+library(knitr)
+library(bslib)
+```
+
+```{r gunsdata, include=FALSE}
+url <- "https://raw.githubusercontent.com/fivethirtyeight/guns-data/master/full_data.csv"
+gundeaths <- read_csv(url)
+glimpse(gundeaths)
+```
+
+```{r youths, include=FALSE}
+youth<-filter(gundeaths, age<=65)
+summary(youth)
+```
+
+```{r nonyouth, include=FALSE}
+nonyouth <- nrow(gundeaths) - nrow(youth)
+```
+
+
+## We have data about `r nrow (gundeaths)` individuals killed by guns. Only `r nonyouth` are older than 65. The distribution of the remainder is shown below:
+
+## Gun Deaths by Age
+```{r youth-dist,echo = FALSE}
+youth %>%
+ggplot(aes(age)) + geom_freqpoly(binwidth = 1)
+```
+
+## Gun Deaths by Race
+```{r race-dist,echo = FALSE}
+youth %>%
+ggplot(aes(fct_infreq(race) %>% fct_rev()))+ geom_bar() + coord_flip() + labs(x = "Victim Race")
+```
